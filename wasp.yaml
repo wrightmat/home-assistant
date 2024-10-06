@@ -408,6 +408,7 @@ action:
                 id: Door Closed
               - condition: device
                 device_id: hubitat.hub
+                domain: select
                 entity_id: select.hub_mode
                 type: selected_option
                 option: device_hub_mode
