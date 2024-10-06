@@ -94,7 +94,7 @@ blueprint:
             entity:
               domain:
                 - select
-              multiple: true
+              multiple: false
     sensor_options:
       name: Sensor Options
       description: >
