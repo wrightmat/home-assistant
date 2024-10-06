@@ -85,15 +85,15 @@ blueprint:
         Options to set if you need additional conditions based on various devices, such as Hubitat hub's mode.
       collapsed: true
       input:
-        hub_mode_device:
-          name: Hub Mode(s) (Optional)
+        device_hub_mode:
+          name: Hub Mode (Optional)
           description: >
             Specify the hub mode(s) in which the automation should run.
           default: 0
           selector:
             entity:
               domain:
-                - ENTITY
+                - hubitat
               multiple: true
     sensor_options:
       name: Sensor Options
