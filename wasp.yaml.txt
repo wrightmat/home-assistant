@@ -80,9 +80,9 @@ blueprint:
                 - light
               multiple: false
     device_options:
-      name: Sensor Options
+      name: Device Options
       description: >
-        Options to set if you need to additional conditions based on various devices, such as Hubitat hub's mode.
+        Options to set if you need additional conditions based on various devices, such as Hubitat hub's mode.
       collapsed: true
       input:
         hub_mode_device:
@@ -93,7 +93,7 @@ blueprint:
           selector:
             entity:
               domain:
-                - device
+                - ENTITY
               multiple: true
     sensor_options:
       name: Sensor Options
