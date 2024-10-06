@@ -93,6 +93,7 @@ blueprint:
           selector:
             state:
               entity_id: select.hub_mode
+              multiple: true
     sensor_options:
       name: Sensor Options
       description: >
@@ -324,6 +325,7 @@ variables:
   light_bulbs: !input light_bulbs
   light_switch: !input light_switch
   fan_switch: !input fan_switch
+  device_hub_mode: !input device_hub_mode
   occupancy_helper: !input occupancy_helper
   bypass_mode: !input bypass_mode
   bypass_helper: !input bypass_helper
