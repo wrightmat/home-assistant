@@ -93,7 +93,7 @@ blueprint:
           selector:
             entity:
               domain:
-                - hubitat
+                - select
               multiple: true
     sensor_options:
       name: Sensor Options
