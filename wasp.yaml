@@ -705,6 +705,12 @@ action:
             conditions:
               - condition: trigger
                 id: Motion On
+              - condition: device
+                device_id: 58b219cca8526775a8fbc3f679371e57
+                domain: select
+                entity_id: select.hub_mode
+                type: selected_option
+                option: !input device_hub_mode
         sequence:
           # Turns on occupancy helper if it's configured
           - if:
@@ -1119,6 +1125,12 @@ action:
                 id: Idle Timer Finished
               - condition: template
                 value_template: "{{ idle_timer != 'timer.none' }}"
+              - condition: device
+                device_id: 58b219cca8526775a8fbc3f679371e57
+                domain: select
+                entity_id: select.hub_mode
+                type: selected_option
+                option: !input device_hub_mode
         sequence:
           # Enables bypass if configured and conditions are met
           - if:
@@ -1228,6 +1240,12 @@ action:
                 id: Door Closed For Seconds
               - condition: template
                 value_template: "{{ idle_timer != 'timer.none' }}"
+              - condition: device
+                device_id: 58b219cca8526775a8fbc3f679371e57
+                domain: select
+                entity_id: select.hub_mode
+                type: selected_option
+                option: !input device_hub_mode
         sequence:
           # Enables bypass if configured
           - if:
