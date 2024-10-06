@@ -12,7 +12,7 @@ blueprint:
     - Users are expected to create input_boolean entities for occupancy tracking and bypass control if they choose to utilize these features.<br/>
     - For bypass functionality, users need to manually integrate call service actions into their automations or methods to control devices when bypassing occupancy detection is required.<br/>
   domain: automation
-  source_url: https://github.com/wrightmat/home-assistant/blob/main/wasp.yaml.txt
+  source_url: https://raw.githubusercontent.com/wrightmat/home-assistant/refs/heads/main/wasp.yaml
   input:
     sensor_entities:
       name: Sensor Entities
@@ -23,6 +23,7 @@ blueprint:
           name: Door Sensor or Door Sensor Group
           description: >
             Select the door sensor or group of door sensors representing the entrance to the "box" — the designated area where occupancy is detected.  In the context of the "Wasp in a Box" concept, the door sensor serves as the gateway to monitoring occupants (referred to as "wasps") entering and exiting the space.<br/>
+            <br/>Please note: This input is restricted to entities within the binary_sensor domain and allows only a single selection.  This field and this input is required.<br/>
           selector:
             entity:
               domain:
@@ -32,6 +33,7 @@ blueprint:
           name: Motion Sensor or Motion Sensor Group
           description: >
             Choose the motion sensor or group of motion sensors responsible for detecting movement within the designated area ("box").  In the "Wasp in a Box" analogy, the motion sensor plays a crucial role in identifying the presence of "wasps" (occupants) within the space.<br/>
+            <br/>Please note: This input is limited to entities categorized under the binary_sensor domain and allows only a single selection.  This field and this input is required.<br/>
           selector:
             entity:
               domain:
@@ -46,6 +48,8 @@ blueprint:
           name: Smart Light Bulb, or Smart Light Bulb Group (Optional)
           description: >
             Select a smart light bulb or group of smart light bulbs to control within the designated area ("box").  These lights illuminate the space based on occupancy detected by the motion sensor.<br/> 
+            <br/>Please note: Only entities within the light domain are selectable, and only one selection is allowed.  Default value: 'light.none'. Only change if you intend to use this field and this input is optional.<br/>
+          default: "light.none"
           selector:
             entity:
               domain:
@@ -55,7 +59,8 @@ blueprint:
           name: Light, Light Group, Switch, or Switch Group (Optional)
           description: >
             Choose a light, light group, switch, or switch group to control within the designated area ("box").  These devices provide illumination based on occupancy detected by the motion sensor.<br/>
-          default: ""
+            <br/>Please note: Only entities within the light or switch domains are selectable, and only one selection is allowed.  Default value: 'light.none'. Only change if you intend to use this field and this input is optional.<br/>
+          default: "light.none"
           selector:
             entity:
               domain:
@@ -66,7 +71,8 @@ blueprint:
           name: Fan or Fan Group (Optional)
           description: >
             Select a fan or group of fans to control within the designated area ("box").  These fans regulate air circulation based on occupancy detected by the motion sensor.<br/>
-          default: ""
+            <br/>Please note: Only entities within the fan or light domains are selectable, and only one selection is allowed.  Default value: 'fan.none'. Only change if you intend to use this field and this input is optional.<br/>
+          default: "fan.none"
           selector:
             entity:
               domain:
@@ -144,7 +150,8 @@ blueprint:
           description: >
             Select an input boolean entity to serve as an occupancy helper within the designated area ("box").  To utilize this function, create an input_boolean helper entity in your Home Assistant configuration or UI.<br/>
             The occupancy helper can be used to track the overall occupancy status and coordinate actions based on occupancy detection.  Can be utilized for more advanced automation scenarios where additional logic based on occupancy status is required.<br/>
-          default: ""
+            <br/>Default value: 'input_boolean.none'. Only change if you intend to use this field and this input is optional.<br/>
+          default: "input_boolean.none"
           selector:
             entity:
               domain:
@@ -185,7 +192,8 @@ blueprint:
             Select an input boolean entity to serve as a bypass helper within the designated area ("box").  The bypass helper enables manual control over bypass events, allowing users to override occupancy detection when necessary.<br/>
             To enable bypass for a WIAB room, manually integrate call service actions into your automations or methods.  For instance, you might configure a double-tap action on the light switch to set the bypass helper.<br/>
             To utilize this function, create an input_boolean helper entity in your Home Assistant configuration or UI.<br/>
-          default: ""
+            <br/>Default value: 'input_boolean.none'. Only change if you intend to use this field and this input is optional.<br/>
+          default: "input_boolean.none"
           selector:
             entity:
               domain:
@@ -196,7 +204,8 @@ blueprint:
           description: >
             Set the duration, in seconds, for the automatic cancellation of a bypass event. After the specified time elapses, the bypass mode will automatically revert to its default state.<br/>
             To utilize this function, create an timer helper entity in your Home Assistant configuration or UI.<br/>
-          default: ""
+            <br/>Default value: 'timer.none'. Only change if you intend to use this field and this input is optional.<br/>
+          default: "timer.none"
           selector:
             entity:
               domain:
@@ -227,7 +236,8 @@ blueprint:
           description: >
             Set the duration, in seconds, for the automatic cancellation of a bypass event. After the specified time elapses, the bypass mode will automatically revert to its default state.<br/>
             To utilize this function, create a timer helper entity in your Home Assistant configuration or UI. Example: Consider a closet where the door is shut, but no motion is detected and the light remains on.<br/>
-          default: ""
+            <br/>Default value: 'timer.none'. Only change if you intend to use this field and this input is optional.<br/>
+          default: "timer.none"
           selector:
             entity:
               domain:
@@ -390,7 +400,7 @@ trigger:
 action:
   # Actions to perform when the door is closed
   - choose:
-      # Actions to perform when the door is closed
+      # Actions to perfrom when the door is closed
       - conditions:
           - condition: and
             conditions:
@@ -406,7 +416,7 @@ action:
           # Turns on occupancy helper if it's configured
           - if:
               - condition: template
-                value_template: "{{ occupancy_helper is defined }}"
+                value_template: "{{ occupancy_helper != 'input_boolean.none' }}"
             then:
               - action: homeassistant.turn_on
                 data: {}
@@ -415,20 +425,20 @@ action:
           # Enables bypass if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
             then:
               - condition: state
                 state: "on"
                 entity_id: !input bypass_helper
               - stop: Bypass Enabled
-          # Turns on light_bulbs if configured and the light is off
+          # Truns on light_bulbs if configured and the light is off
           - if:
               # Check if both conditions are met
               - condition: and
                 conditions:
-                  # Check if light_bulbs is defined
+                  # Check if light_bulbs is not equal to 'light.none'
                   - condition: template
-                    value_template: "{{ light_bulbs is defined }}"
+                    value_template: "{{ light_bulbs != 'light.none' }}"
                   # Check if the state of the light is "off"
                   - condition: state
                     entity_id: !input light_bulbs
@@ -548,7 +558,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ light_switch is defined' }}"
+                    value_template: "{{ light_switch != 'light.none' }}"
             then:
               - condition: state
                 entity_id: !input light_switch
@@ -562,7 +572,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ fan_switch is defined }}"
+                    value_template: "{{ fan_switch != 'fan.none' }}"
             then:
               - condition: state
                 entity_id: !input fan_switch
@@ -584,7 +594,7 @@ action:
           # Turns off occupancy helper if configured
           - if:
               - condition: template
-                value_template: "{{ occupancy_helper is defined }}"
+                value_template: "{{ occupancy_helper != 'input_boolean.none' }}"
             then:
               - action: homeassistant.turn_off
                 data: {}
@@ -593,7 +603,7 @@ action:
           # Enables bypass if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
             then:
               - condition: state
                 state: "on"
@@ -604,9 +614,9 @@ action:
               # Check if both conditions are met
               - condition: and
                 conditions:
-                  # Check if light_bulbs is defined
+                  # Check if light_bulbs is not equal to 'light.none'
                   - condition: template
-                    value_template: "{{ light_bulbs is defined }}"
+                    value_template: "{{ light_bulbs != 'light.none' }}"
                   # Check if the state of the light is "on"
                   - condition: state
                     entity_id: !input light_bulbs
@@ -647,7 +657,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ light_switch is defined }}"
+                    value_template: "{{ light_switch != 'light.none' }}"
             then:
               - condition: state
                 entity_id: !input light_switch
@@ -661,7 +671,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ fan_switch is defined }}"
+                    value_template: "{{ fan_switch != 'fan.none' }}"
             then:
               - condition: state
                 entity_id: !input fan_switch
@@ -675,7 +685,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ idle_timer is defined }}"
+                    value_template: "{{ idle_timer != 'timer.none' }}"
                   - condition: state
                     entity_id: !input idle_timer
                     state: active
@@ -699,7 +709,7 @@ action:
           # Turns on occupancy helper if it's configured
           - if:
               - condition: template
-                value_template: "{{ occupancy_helper is defined }}"
+                value_template: "{{ occupancy_helper != 'input_boolean.none' }}"
             then:
               - action: homeassistant.turn_on
                 data: {}
@@ -708,7 +718,7 @@ action:
           # Enables bypass if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
             then:
               - condition: state
                 state: "on"
@@ -719,9 +729,9 @@ action:
               # Check if both conditions are met
               - condition: and
                 conditions:
-                  # Check if light_bulbs is defined
+                  # Check if light_bulbs is not equal to 'light.none'
                   - condition: template
-                    value_template: "{{ light_bulbs is defined }}"
+                    value_template: "{{ light_bulbs != 'light.none' }}"
                   # Check if the state of the light is "off"
                   - condition: state
                     entity_id: !input light_bulbs
@@ -841,7 +851,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ light_switch is defined }}"
+                    value_template: "{{ light_switch != 'light.none' }}"
             then:
               - condition: state
                 entity_id: !input light_switch
@@ -855,7 +865,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ fan_switch is defined }}"
+                    value_template: "{{ fan_switch != 'fan.none' }}"
             then:
               - condition: state
                 entity_id: !input fan_switch
@@ -869,7 +879,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ idle_timer is defined }}"
+                    value_template: "{{ idle_timer != 'timer.none' }}"
                   - condition: state
                     entity_id: !input idle_timer
                     state: active
@@ -896,7 +906,7 @@ action:
           # Turns off occupancy helper if configured
           - if:
               - condition: template
-                value_template: "{{ occupancy_helper is defined }}"
+                value_template: "{{ occupancy_helper != 'input_boolean.none' }}"
             then:
               - action: homeassistant.turn_off
                 data: {}
@@ -905,7 +915,7 @@ action:
           # Enables bypass if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
             then:
               - condition: state
                 state: "on"
@@ -916,9 +926,9 @@ action:
               # Check if both conditions are met
               - condition: and
                 conditions:
-                  # Check if light_bulbs is defined
+                  # Check if light_bulbs is not equal to 'light.none'
                   - condition: template
-                    value_template: "{{ light_bulbs is defined }}"
+                    value_template: "{{ light_bulbs != 'light.none' }}"
                   # Check if the state of the light is "on"
                   - condition: state
                     entity_id: !input light_bulbs
@@ -959,7 +969,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ light_switch is defined }}"
+                    value_template: "{{ light_switch != 'light.none' }}"
             then:
               - condition: state
                 entity_id: !input light_switch
@@ -973,7 +983,7 @@ action:
               - condition: and
                 conditions:
                   - condition: template
-                    value_template: "{{ fan_switch is defined }}"
+                    value_template: "{{ fan_switch != 'fan.none' }}"
             then:
               - condition: state
                 entity_id: !input fan_switch
@@ -989,12 +999,12 @@ action:
               - condition: trigger
                 id: Bypass Turn on
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
         sequence:
           # Starts bypass timer if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_timer is defined }}"
+                value_template: "{{ bypass_timer != 'timer.none' }}"
             then:
               - action: timer.start
                 metadata: {}
@@ -1008,7 +1018,7 @@ action:
               - condition: trigger
                 id: Bypass Turn off
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
               - condition: not
                 conditions:
                   - condition: trigger
@@ -1017,7 +1027,7 @@ action:
           # Finishes bypass timer if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_timer is defined }}"
+                value_template: "{{ bypass_timer != 'timer.none' }}"
             then:
               - action: timer.finish
                 metadata: {}
@@ -1036,7 +1046,7 @@ action:
           # Turns off bypass if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
             then:
               - action: homeassistant.turn_off
                 metadata: {}
@@ -1053,7 +1063,7 @@ action:
               # Turns off occupancy helper if configured
               - if:
                   - condition: template
-                    value_template: "{{ occupancy_helper is defined }}"
+                    value_template: "{{ occupancy_helper != 'input_boolean.none' }}"
                 then:
                   - action: homeassistant.turn_off
                     data: {}
@@ -1064,7 +1074,7 @@ action:
                   - condition: and
                     conditions:
                       - condition: template
-                        value_template: "{{ light_bulbs is defined }}"
+                        value_template: "{{ light_bulbs != 'light.none' }}"
                 then:
                   - condition: state
                     entity_id: !input light_bulbs
@@ -1078,7 +1088,7 @@ action:
                   - condition: and
                     conditions:
                       - condition: template
-                        value_template: "{{ light_switch is defined }}"
+                        value_template: "{{ light_switch != 'light.none' }}"
                 then:
                   - condition: state
                     entity_id: !input light_switch
@@ -1092,7 +1102,7 @@ action:
                   - condition: and
                     conditions:
                       - condition: template
-                        value_template: "{{ fan_switch is defined }}"
+                        value_template: "{{ fan_switch != 'fan.none' }}"
                 then:
                   - condition: state
                     entity_id: !input fan_switch
@@ -1108,12 +1118,12 @@ action:
               - condition: trigger
                 id: Idle Timer Finished
               - condition: template
-                value_template: "{{ idle_timer is defined }}"
+                value_template: "{{ idle_timer != 'timer.none' }}"
         sequence:
           # Enables bypass if configured and conditions are met
           - if:
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
             then:
               - condition: state
                 state: "on"
@@ -1133,7 +1143,7 @@ action:
               # Turns off occupancy helper if configured
               - if:
                   - condition: template
-                    value_template: "{{ occupancy_helper is defined }}"
+                    value_template: "{{ occupancy_helper != 'input_boolean.none' }}"
                 then:
                   - action: homeassistant.turn_off
                     data: {}
@@ -1144,9 +1154,9 @@ action:
                   # Check if both conditions are met
                   - condition: and
                     conditions:
-                      # Check if light_bulbs is defined
+                      # Check if light_bulbs is not equal to 'light.none'
                       - condition: template
-                        value_template: "{{ light_bulbs is defined }}"
+                        value_template: "{{ light_bulbs != 'light.none' }}"
                       # Check if the state of the light is "on"
                       - condition: state
                         entity_id: !input light_bulbs
@@ -1187,7 +1197,7 @@ action:
                   - condition: and
                     conditions:
                       - condition: template
-                        value_template: "{{ light_switch is defined }}"
+                        value_template: "{{ light_switch != 'light.none' }}"
                 then:
                   - condition: state
                     entity_id: !input light_switch
@@ -1201,7 +1211,7 @@ action:
                   - condition: and
                     conditions:
                       - condition: template
-                        value_template: "{{ fan_switch is defined }}"
+                        value_template: "{{ fan_switch != 'fan.none' }}"
                 then:
                   - condition: state
                     entity_id: !input fan_switch
@@ -1217,12 +1227,12 @@ action:
               - condition: trigger
                 id: Door Closed For Seconds
               - condition: template
-                value_template: "{{ idle_timer is defined }}"
+                value_template: "{{ idle_timer != 'timer.none' }}"
         sequence:
           # Enables bypass if configured
           - if:
               - condition: template
-                value_template: "{{ bypass_helper is defined }}"
+                value_template: "{{ bypass_helper != 'input_boolean.none' }}"
             then:
               - condition: state
                 state: "on"
