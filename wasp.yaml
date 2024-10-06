@@ -24,7 +24,7 @@ blueprint:
           description: >
             Select the door sensor or group of door sensors representing the entrance to the "box" — the designated area where occupancy is detected.  In the context of the "Wasp in a Box" concept, the door sensor serves as the gateway to monitoring occupants (referred to as "wasps") entering and exiting the space.<br/>
             <br/>Please note: This input is restricted to entities within the binary_sensor domain and allows only a single selection.  This field and this input is required.<br/>
-          default: {}
+          default: ""
           selector:
             entity:
               domain:
