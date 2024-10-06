@@ -93,7 +93,6 @@ blueprint:
           selector:
             state:
               entity_id: select.hub_mode
-              multiple: true
     sensor_options:
       name: Sensor Options
       description: >
@@ -407,6 +406,11 @@ action:
             conditions:
               - condition: trigger
                 id: Door Closed
+              - condition: device
+                device_id: hubitat.hub
+                entity_id: select.hub_mode
+                type: selected_option
+                option: device_hub_mode
         sequence:
           # Turns on occupancy helper if it's configured
           - if:
