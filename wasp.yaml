@@ -227,6 +227,7 @@ blueprint:
           description: >
             Set the duration, in seconds, for the automatic cancellation of a bypass event. After the specified time elapses, the bypass mode will automatically revert to its default state.<br/>
             To utilize this function, create a timer helper entity in your Home Assistant configuration or UI. Example: Consider a closet where the door is shut, but no motion is detected and the light remains on.<br/>
+          default: ""
           selector:
             entity:
               domain:
@@ -400,7 +401,7 @@ action:
                 domain: select
                 entity_id: select.hub_mode
                 type: selected_option
-                option: device_hub_mode
+                option: !input device_hub_mode
         sequence:
           # Turns on occupancy helper if it's configured
           - if:
