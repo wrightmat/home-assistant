@@ -23,8 +23,6 @@ blueprint:
           name: Door Sensor or Door Sensor Group
           description: >
             Select the door sensor or group of door sensors representing the entrance to the "box" — the designated area where occupancy is detected.  In the context of the "Wasp in a Box" concept, the door sensor serves as the gateway to monitoring occupants (referred to as "wasps") entering and exiting the space.<br/>
-            <br/>Please note: This input is restricted to entities within the binary_sensor domain and allows only a single selection.  This field and this input is required.<br/>
-          default: ""
           selector:
             entity:
               domain:
@@ -34,7 +32,6 @@ blueprint:
           name: Motion Sensor or Motion Sensor Group
           description: >
             Choose the motion sensor or group of motion sensors responsible for detecting movement within the designated area ("box").  In the "Wasp in a Box" analogy, the motion sensor plays a crucial role in identifying the presence of "wasps" (occupants) within the space.<br/>
-            <br/>Please note: This input is limited to entities categorized under the binary_sensor domain and allows only a single selection.  This field and this input is required.<br/>
           selector:
             entity:
               domain:
@@ -58,6 +55,7 @@ blueprint:
           name: Light, Light Group, Switch, or Switch Group (Optional)
           description: >
             Choose a light, light group, switch, or switch group to control within the designated area ("box").  These devices provide illumination based on occupancy detected by the motion sensor.<br/>
+          default: ""
           selector:
             entity:
               domain:
@@ -68,6 +66,7 @@ blueprint:
           name: Fan or Fan Group (Optional)
           description: >
             Select a fan or group of fans to control within the designated area ("box").  These fans regulate air circulation based on occupancy detected by the motion sensor.<br/>
+          default: ""
           selector:
             entity:
               domain:
@@ -145,6 +144,7 @@ blueprint:
           description: >
             Select an input boolean entity to serve as an occupancy helper within the designated area ("box").  To utilize this function, create an input_boolean helper entity in your Home Assistant configuration or UI.<br/>
             The occupancy helper can be used to track the overall occupancy status and coordinate actions based on occupancy detection.  Can be utilized for more advanced automation scenarios where additional logic based on occupancy status is required.<br/>
+          default: ""
           selector:
             entity:
               domain:
@@ -185,6 +185,7 @@ blueprint:
             Select an input boolean entity to serve as a bypass helper within the designated area ("box").  The bypass helper enables manual control over bypass events, allowing users to override occupancy detection when necessary.<br/>
             To enable bypass for a WIAB room, manually integrate call service actions into your automations or methods.  For instance, you might configure a double-tap action on the light switch to set the bypass helper.<br/>
             To utilize this function, create an input_boolean helper entity in your Home Assistant configuration or UI.<br/>
+          default: ""
           selector:
             entity:
               domain:
@@ -195,6 +196,7 @@ blueprint:
           description: >
             Set the duration, in seconds, for the automatic cancellation of a bypass event. After the specified time elapses, the bypass mode will automatically revert to its default state.<br/>
             To utilize this function, create an timer helper entity in your Home Assistant configuration or UI.<br/>
+          default: ""
           selector:
             entity:
               domain:
