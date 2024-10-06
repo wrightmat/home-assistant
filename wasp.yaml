@@ -91,10 +91,7 @@ blueprint:
             Specify the hub mode(s) in which the automation should run.
           default: 0
           selector:
-            entity:
-              domain:
-                - select
-              multiple: false
+            entity_id: select.hub_mode
     sensor_options:
       name: Sensor Options
       description: >
