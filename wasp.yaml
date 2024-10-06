@@ -407,7 +407,7 @@ action:
               - condition: trigger
                 id: Door Closed
               - condition: device
-                device_id: hubitat.hub
+                device_id: 58b219cca8526775a8fbc3f679371e57
                 domain: select
                 entity_id: select.hub_mode
                 type: selected_option
