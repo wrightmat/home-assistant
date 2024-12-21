@@ -706,7 +706,7 @@ action:
               - condition: trigger
                 id: Motion On
               - condition: device
-                device_id: 58b219cca8526775a8fbc3f679371e57
+                device_id: 18346e510cdfff052251fe1e2e523827
                 domain: select
                 entity_id: select.hub_mode
                 type: selected_option
@@ -1126,7 +1126,7 @@ action:
               - condition: template
                 value_template: "{{ idle_timer != 'timer.none' }}"
               - condition: device
-                device_id: 58b219cca8526775a8fbc3f679371e57
+                device_id: 18346e510cdfff052251fe1e2e523827
                 domain: select
                 entity_id: select.hub_mode
                 type: selected_option
